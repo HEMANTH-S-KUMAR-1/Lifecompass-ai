@@ -148,7 +148,74 @@ npm run dev
 npm run build
 # Output in dist/
 ```
-You can deploy `dist/` to Netlify, Vercel, Cloudflare Pages, or any static host.
+
+## 🚀 Deployment to Cloudflare Pages
+
+### Method 1: GitHub Integration (Recommended)
+1. **Push to GitHub** (already done):
+   ```bash
+   git add .
+   git commit -m "Deploy to Cloudflare Pages"
+   git push
+   ```
+
+2. **Setup Cloudflare Pages**:
+   - Go to [Cloudflare Dashboard](https://dash.cloudflare.com/)
+   - Navigate to **Pages** → **Create a project**
+   - Connect to **GitHub** and select `Lifecompass-ai` repository
+   - Configure build settings:
+     - **Build command**: `npm run build`
+     - **Build output directory**: `dist`
+     - **Root directory**: `/` (leave empty)
+
+3. **Add Environment Variables** in Cloudflare Pages dashboard:
+   ```
+   VITE_OPENROUTER_API_KEY=your_openrouter_api_key_here
+   VITE_OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
+   VITE_APP_NAME=LifeCompass-AI
+   VITE_APP_URL=https://your-site.pages.dev
+   VITE_DEEPSEEK_R1_MODEL=deepseek/deepseek-r1
+   VITE_DEEPSEEK_V3_MODEL=deepseek/deepseek-v3
+   VITE_DEEPSEEK_QWEN_MODEL=qwen/qwen-2.5-72b-instruct
+   VITE_DEFAULT_MODEL=deepseek/deepseek-r1
+   VITE_FALLBACK_MODEL=deepseek/deepseek-v3
+   VITE_QUICK_MODEL=qwen/qwen-2.5-72b-instruct
+   VITE_R1_RATE_LIMIT=20
+   VITE_V3_RATE_LIMIT=60
+   VITE_QWEN_RATE_LIMIT=100
+   VITE_R1_TIMEOUT=30000
+   VITE_V3_TIMEOUT=15000
+   VITE_QWEN_TIMEOUT=10000
+   VITE_ENABLE_MODEL_SWITCHING=true
+   VITE_ENABLE_FALLBACK=true
+   VITE_DEBUG_MODE=false
+   ```
+
+4. **Deploy**: Cloudflare will automatically build and deploy on every push to main branch.
+
+### Method 2: Direct Upload
+```bash
+# Build the project
+npm run build
+
+# Install Wrangler CLI (if not installed)
+npm install -g wrangler
+
+# Login to Cloudflare
+wrangler login
+
+# Deploy to Cloudflare Pages
+wrangler pages deploy dist --project-name lifecompass-ai
+```
+
+### Method 3: Drag & Drop
+1. Build the project: `npm run build`
+2. Go to [Cloudflare Pages](https://pages.cloudflare.com/)
+3. Drag and drop the `dist/` folder
+
+> **Note**: Methods 2 & 3 require manual environment variable setup in the Cloudflare dashboard.
+
+You can also deploy to Netlify, Vercel, or any static host using the `dist/` folder.
 
 ## 📝 License
 Currently unlicensed (all rights reserved by default). Add an OSS license (MIT / Apache-2.0) if you intend public reuse.
