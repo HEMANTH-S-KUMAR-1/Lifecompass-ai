@@ -80,43 +80,45 @@ export class OpenRouterModelConfig {
   }
 
   public selectModelForQuery(queryType: QueryType, messageLength?: number): ModelType {
-    // Determine the best model based on query type and context
+    // Optimized for speed - prioritize faster models
     switch (queryType) {
+      case QueryType.QUICK_SUMMARY:
+      case QueryType.CLARIFICATION:
+        return ModelType.QUICK; // Use Qwen for ultra-fast responses
+
+      case QueryType.CASUAL_CHAT:
+        return ModelType.CONVERSATIONAL; // Use V3 for smooth conversation
+
       case QueryType.CAREER_GUIDANCE:
       case QueryType.ROADMAP:
       case QueryType.SKILL_ANALYSIS:
       case QueryType.RESUME_COACHING:
       case QueryType.INTERVIEW_PREP:
-        return ModelType.STRUCTURED; // Use R1 for detailed analysis
-
-      case QueryType.CASUAL_CHAT:
-        return ModelType.CONVERSATIONAL; // Use V3.1 for smooth conversation
-
-      case QueryType.QUICK_SUMMARY:
-      case QueryType.CLARIFICATION:
-        return ModelType.QUICK; // Use Qwen3 8B for fast responses
+        // For complex queries, still use structured but with shorter fallback
+        return messageLength && messageLength < 100 ? ModelType.CONVERSATIONAL : ModelType.STRUCTURED;
 
       default:
-        // Fallback logic based on message length
-        if (messageLength && messageLength < 50) {
-          return ModelType.QUICK;
-        } else if (messageLength && messageLength > 200) {
-          return ModelType.STRUCTURED;
+        // Optimized fallback - prioritize speed
+        if (messageLength && messageLength < 30) {
+          return ModelType.QUICK; // Very short queries = instant response
+        } else if (messageLength && messageLength < 150) {
+          return ModelType.CONVERSATIONAL; // Medium queries = fast response
         }
-        return ModelType.CONVERSATIONAL;
+        return ModelType.STRUCTURED; // Long queries = detailed response
     }
   }
 
   public getFallbackOrder(primaryModel: ModelType): ModelType[] {
+    // Optimized fallback order - always prioritize speed
     switch (primaryModel) {
       case ModelType.STRUCTURED:
-        return [ModelType.CONVERSATIONAL, ModelType.QUICK];
+        return [ModelType.QUICK, ModelType.CONVERSATIONAL]; // Try fastest first
       case ModelType.CONVERSATIONAL:
-        return [ModelType.QUICK, ModelType.STRUCTURED];
+        return [ModelType.QUICK, ModelType.STRUCTURED]; // Try fastest first
       case ModelType.QUICK:
-        return [ModelType.CONVERSATIONAL, ModelType.STRUCTURED];
+        return [ModelType.CONVERSATIONAL, ModelType.STRUCTURED]; // Quick model failed, try others
       default:
-        return [ModelType.CONVERSATIONAL, ModelType.QUICK];
+        return [ModelType.QUICK, ModelType.CONVERSATIONAL]; // Always prioritize speed
     }
   }
 

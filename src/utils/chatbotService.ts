@@ -98,9 +98,13 @@ class OpenRouterApiService {
         body: JSON.stringify({
           model: config.model,
           messages,
-          temperature: modelType === ModelType.STRUCTURED ? 0.3 : 0.7,
-          max_tokens: modelType === ModelType.QUICK ? 150 : 1000,
-          stream: false
+          temperature: modelType === ModelType.STRUCTURED ? 0.2 : 0.5, // Lower temperature for faster, focused responses
+          max_tokens: modelType === ModelType.QUICK ? 200 : modelType === ModelType.CONVERSATIONAL ? 600 : 1200, // Optimized token limits
+          stream: false,
+          // Performance optimizations
+          top_p: 0.9, // Slightly more focused responses
+          frequency_penalty: 0.1, // Reduce repetition
+          presence_penalty: 0.1 // Encourage diversity
         }),
         signal: AbortSignal.timeout(config.timeout)
       });
