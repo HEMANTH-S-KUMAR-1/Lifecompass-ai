@@ -1,16 +1,26 @@
 {
-  "name": "vite-react-typescript-starter",
+  "name": "lifecompass-ai",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "AI-powered personalized career guidance platform for Indian students with multi-model intelligence",
+  "keywords": ["career-guidance", "ai", "education", "students", "openrouter", "deepseek", "react", "typescript"],
+  "author": "LifeCompass AI Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HEMANTH-S-KUMAR-1/HEMANTH_S_KUMAR.portfolio.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "lint:fix": "eslint . --fix",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit",
+    "build:analyze": "vite build --mode analyze"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.57.4",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"

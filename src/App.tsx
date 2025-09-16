@@ -1,9 +1,22 @@
-import { useState } from 'react';
-import { BookOpen, Target, TrendingUp, Users, ChevronRight, GraduationCap, MessageCircle } from 'lucide-react';
-import StudentProfileForm from './components/StudentProfileForm';
-import CareerRecommendations from './components/CareerRecommendations';
-import ChatBot from './components/ChatBot';
+import { useState, lazy, Suspense } from 'react';
+import { BookOpen, Target, TrendingUp, Users, ChevronRight, GraduationCap, MessageCircle, Loader2 } from 'lucide-react';
+import ErrorBoundary from './components/ErrorBoundary';
 import { StudentProfile } from './types/StudentProfile';
+
+// Lazy load components for better performance
+const StudentProfileForm = lazy(() => import('./components/StudentProfileForm'));
+const CareerRecommendations = lazy(() => import('./components/CareerRecommendations'));
+const ChatBot = lazy(() => import('./components/ChatBot'));
+
+// Loading component for suspense fallback
+const LoadingFallback = ({ message = 'Loading...' }: { message?: string }) => (
+  <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
+    <div className="text-center">
+      <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-4" />
+      <p className="text-gray-600 font-medium">{message}</p>
+    </div>
+  </div>
+);
 
 function App() {
   const [currentStep, setCurrentStep] = useState<'welcome' | 'profile' | 'results' | 'chat'>('welcome');
@@ -16,7 +29,8 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 relative">
+    <ErrorBoundary>
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 relative">
       {currentStep === 'welcome' && (
         <div className="container mx-auto px-4 py-12">
           {/* Header */}
@@ -109,18 +123,22 @@ function App() {
       )}
 
       {currentStep === 'profile' && (
-        <StudentProfileForm 
-          onSubmit={handleProfileSubmit}
-          onBack={() => setCurrentStep('welcome')}
-        />
+        <Suspense fallback={<LoadingFallback message="Loading profile form..." />}>
+          <StudentProfileForm 
+            onSubmit={handleProfileSubmit}
+            onBack={() => setCurrentStep('welcome')}
+          />
+        </Suspense>
       )}
 
       {currentStep === 'results' && studentProfile && (
-        <CareerRecommendations 
-          profile={studentProfile}
-          onBack={() => setCurrentStep('profile')}
-          onStartChat={() => setShowChat(true)}
-        />
+        <Suspense fallback={<LoadingFallback message="Generating your career recommendations..." />}>
+          <CareerRecommendations 
+            profile={studentProfile}
+            onBack={() => setCurrentStep('profile')}
+            onStartChat={() => setShowChat(true)}
+          />
+        </Suspense>
       )}
 
       {/* Floating Chat Button */}
@@ -135,12 +153,15 @@ function App() {
 
       {/* Chat Modal */}
       {showChat && (
-        <ChatBot 
-          onClose={() => setShowChat(false)}
-          studentProfile={studentProfile}
-        />
+        <Suspense fallback={<LoadingFallback message="Starting AI advisor..." />}>
+          <ChatBot 
+            onClose={() => setShowChat(false)}
+            studentProfile={studentProfile}
+          />
+        </Suspense>
       )}
-    </div>
+      </div>
+    </ErrorBoundary>
   );
 }
 
