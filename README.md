@@ -2,18 +2,24 @@
 
 AI-powered personalized career & skill guidance platform tailored for Indian students. Generate structured learning roadmaps, discover suitable career paths, analyze skill gaps, and interact with an AI Career Advisor backed by multi‑model intelligence (OpenRouter: DeepSeek R1, DeepSeek V3, Qwen 2.5 72B).
 
+> **📅 Last Updated:** September 2025 | **Version:** 1.0.0 | **Status:** Production Ready  
+> **🚀 Latest Features:** Save & Download Career Plans, Enhanced UI, Optimized Performance
+
 ## 🚀 Overview
 LifeCompass AI helps students move from confusion to clarity:
-- Capture a basic student profile (interests, strengths, goals)
-- Recommend relevant career paths
-- Generate a 6‑month structured learning plan with project ideas
-- Provide market insights (demand, salary ranges, locations)
-- Offer AI chat for follow‑up questions (career guidance, interview prep, resume feedback)
+- **📝 Profile Creation** - Capture student profile (age, education, strengths, interests, location)
+- **🎯 Smart Recommendations** - AI-powered career path suggestions with confidence levels
+- **📊 Learning Plans** - Generate 6‑month structured roadmaps with weekly objectives and projects
+- **💾 Plan Management** - Save, download, and access complete career plans offline
+- **📈 Market Intelligence** - Real-time insights on salary ranges, skill demand, and growth trends
+- **🤖 AI Advisory** - Interactive chat for follow‑up questions (career guidance, interview prep, resume feedback)
+- **📱 Responsive Design** - Works seamlessly on desktop, tablet, and mobile devices
 
 ## ✨ Key Features
 - **🎯 Personalized Career Recommendations** - AI-powered top 3–5 career paths based on profile
 - **📚 6‑Month Learning Roadmap** - Structured monthly milestones with project ideas
-- **📊 Real-time Market Insights** - Current demand, salary ranges, growth trends, top cities
+- **� Save & Download Plans** - Export complete career plans as downloadable text files with localStorage backup
+- **�📊 Real-time Market Insights** - Current demand, salary ranges, growth trends, top cities
 - **🤖 Intelligent AI Chat Advisor** - Multi-model routing with performance optimization
 - **📝 Resume & Interview Prep** - AI-powered feedback and mock interview questions
 - **⚡ High-Performance Architecture** - Optimized for speed with smart model selection
@@ -50,19 +56,20 @@ Implementation in `src/utils/chatbotService.ts` + `src/utils/openRouterConfig.ts
 ```
 Lifecompass-ai/
 ├── src/
-│  ├── App.tsx
-│  ├── main.tsx
-│  ├── index.css
+│  ├── App.tsx                    # Main app component with routing
+│  ├── main.tsx                   # React entry point
+│  ├── index.css                  # Global styles + Tailwind
 │  ├── components/
-│  │   ├── StudentProfileForm.tsx
-│  │   ├── CareerRecommendations.tsx
-│  │   └── ChatBot.tsx
+│  │   ├── StudentProfileForm.tsx # 4-step profile creation form
+│  │   ├── CareerRecommendations.tsx # Results display with save functionality
+│  │   ├── ChatBot.tsx           # AI chat interface
+│  │   └── ErrorBoundary.tsx     # Error handling component
 │  ├── types/
-│  │   └── StudentProfile.ts
+│  │   └── StudentProfile.ts     # TypeScript interfaces
 │  └── utils/
-│      ├── careerAnalysis.ts
-│      ├── chatbotService.ts
-│      └── openRouterConfig.ts
+│      ├── careerAnalysis.ts     # Career matching & plan generation logic
+│      ├── chatbotService.ts     # AI service with multi-model routing  
+│      └── openRouterConfig.ts   # API configuration & model settings
 ├── .env (NOT COMMITTED)
 ├── .env.example
 ├── OPENROUTER_SETUP.md
@@ -108,8 +115,11 @@ VITE_DEBUG_MODE=false
 | `npm install` | Install dependencies |
 | `npm run dev` | Start Vite dev server (HMR) |
 | `npm run lint` | Run ESLint over project |
+| `npm run lint:fix` | Automatically fix linting issues |
 | `npm run build` | Production build (outputs `dist/`) |
 | `npm run preview` | Preview production build locally |
+| `npm run type-check` | Check TypeScript types without building |
+| `npm run build:analyze` | Build with bundle analysis |
 
 ## ▶️ Getting Started
 ```bash
@@ -124,6 +134,37 @@ npm run dev
 
 # Open http://localhost:5173
 ```
+
+## 💾 Save My Plan Feature
+
+The **Save My Plan** functionality allows users to preserve and export their personalized career guidance:
+
+### 🎯 **What Gets Saved:**
+- **Complete Student Profile** - Age, education, strengths, interests, location
+- **Career Recommendations** - Top 3-5 AI-suggested career paths with confidence levels
+- **6-Month Learning Plan** - Structured roadmap with monthly goals and project ideas
+- **Interview Questions** - Career-specific mock questions for preparation
+- **Resume Tips** - Personalized improvement suggestions
+- **Market Insights** - Current trends and next steps
+
+### 📁 **How It Works:**
+1. **Complete Profile** - Fill out the 4-step student profile form
+2. **View Results** - Review your personalized career recommendations
+3. **Click "Save My Plan"** - Button located in the blue call-to-action section
+4. **Automatic Download** - Comprehensive text file downloads instantly
+5. **Browser Backup** - Plan also saved to localStorage for future access
+
+### 📄 **File Format:**
+- **Text File (.txt)** - Easy to read, share, and reference offline
+- **Structured Layout** - Organized sections for easy navigation
+- **Personalized Filename** - `LifeCompass-Career-Plan-[Location].txt`
+- **Complete Documentation** - All recommendations and guidance in one file
+
+### 🔧 **Technical Implementation:**
+- **Type-Safe Code** - Full TypeScript implementation with proper interfaces
+- **Browser Storage** - Uses localStorage for persistence across sessions
+- **Error Handling** - Graceful fallbacks and user feedback
+- **No Server Required** - Client-side generation and download
 
 ## 💬 AI Chat Flow - Optimized Pipeline
 1. **Message Analysis** - User input classified by intent and length
@@ -145,9 +186,10 @@ npm run dev
 ## 🧪 Future Enhancements (Roadmap)
 
 ### 🔄 Phase 1 - User Experience
+- [x] **Plan Download & Save** - Export complete career plans as downloadable files ✅
 - [ ] **User Authentication** - Supabase integration for personalized profiles
-- [ ] **Progress Tracking** - Dashboard to monitor learning milestones
-- [ ] **PDF Export** - Save and share learning plans offline
+- [ ] **Progress Tracking** - Dashboard to monitor learning milestones  
+- [ ] **PDF Export** - Enhanced PDF generation with charts and graphics
 - [ ] **Advanced Analytics** - Usage insights and success metrics
 
 ### 🤖 Phase 2 - AI Enhancement  
@@ -185,6 +227,8 @@ npm run build
 ```
 
 ## 🚀 Deployment to Cloudflare Pages
+
+> **✅ Live Demo:** The application is currently deployed and accessible via Cloudflare Pages integration with this GitHub repository.
 
 ### Method 1: GitHub Integration (Recommended)
 1. **Push to GitHub** (already done):
@@ -252,7 +296,24 @@ wrangler pages deploy dist --project-name lifecompass-ai
 
 You can also deploy to Netlify, Vercel, or any static host using the `dist/` folder.
 
-## 📝 License
+## � Recent Updates
+
+### Version 1.0.0 (September 2025)
+- ✅ **Save My Plan Feature** - Download complete career plans as text files
+- ✅ **Enhanced Performance** - Optimized AI model routing and response times  
+- ✅ **UI/UX Improvements** - Cleaner interface and better user experience
+- ✅ **Code Quality** - Full TypeScript implementation with strict type checking
+- ✅ **Error Handling** - Comprehensive error boundaries and graceful fallbacks
+- ✅ **Responsive Design** - Improved mobile and tablet compatibility
+- ✅ **Production Deployment** - Live on Cloudflare Pages with CI/CD
+
+### Next Release (Coming Soon)
+- 📋 **PDF Export** - Enhanced visual career plans with charts and graphics
+- 👤 **User Profiles** - Save multiple plans and track progress over time
+- 🎯 **Advanced Analytics** - Success metrics and usage insights
+- 🌐 **Multi-language Support** - Hindi, Tamil, Telugu, and other regional languages
+
+## �📝 License
 Currently unlicensed (all rights reserved by default). Add an OSS license (MIT / Apache-2.0) if you intend public reuse.
 
 ## 🙌 Contributing
