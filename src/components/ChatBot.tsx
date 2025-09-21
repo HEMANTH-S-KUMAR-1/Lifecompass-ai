@@ -46,7 +46,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ onClose, studentProfile }) => {
     if (!inputValue.trim() || isLoading) return;
 
     const userMessage: Message = {
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       type: 'user',
       content: inputValue.trim(),
       timestamp: new Date()
@@ -80,7 +80,8 @@ const ChatBot: React.FC<ChatBotProps> = ({ onClose, studentProfile }) => {
           timestamp: new Date()
         }];
       });
-    } catch {
+    } catch (error) {
+      console.error('Chat error:', error);
       setMessages(prev => {
         const filtered = prev.filter(msg => msg.id !== 'typing');
         return [...filtered, {
@@ -165,9 +166,13 @@ const ChatBot: React.FC<ChatBotProps> = ({ onClose, studentProfile }) => {
                   {message.isTyping ? (
                     <div className="flex items-center space-x-1">
                       <div className="flex space-x-1">
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                        {[0, 0.1, 0.2].map((delay, index) => (
+                          <div 
+                            key={index}
+                            className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                            style={{animationDelay: `${delay}s`}}
+                          />
+                        ))}
                       </div>
                       <span className="text-sm text-gray-500 ml-2">AI is thinking...</span>
                     </div>

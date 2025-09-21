@@ -99,7 +99,7 @@ class OpenRouterApiService {
           model: config.model,
           messages,
           temperature: modelType === ModelType.STRUCTURED ? 0.2 : 0.5, // Lower temperature for faster, focused responses
-          max_tokens: modelType === ModelType.QUICK ? 200 : modelType === ModelType.CONVERSATIONAL ? 600 : 1200, // Optimized token limits
+          max_tokens: this.getTokenLimit(modelType), // Optimized token limits
           stream: false,
           // Performance optimizations
           top_p: 0.9, // Slightly more focused responses
@@ -117,7 +117,7 @@ class OpenRouterApiService {
       const responseTime = Date.now() - startTime;
 
       return {
-        content: data.choices[0]?.message?.content || 'Sorry, I could not generate a response.',
+        content: data?.choices?.[0]?.message?.content || 'Sorry, I could not generate a response.',
         model: config.model,
         tokens: data.usage?.total_tokens,
         responseTime
@@ -128,9 +128,23 @@ class OpenRouterApiService {
     }
   }
 
+  private getTokenLimit(modelType: ModelType): number {
+    switch (modelType) {
+      case ModelType.QUICK:
+        return 200;
+      case ModelType.CONVERSATIONAL:
+        return 600;
+      case ModelType.STRUCTURED:
+        return 1200;
+      default:
+        return 600;
+    }
+  }
+
   private isRateLimited(modelType: ModelType): boolean {
     const now = Date.now();
-    if (now - this.lastResetTime > 60000) { // Reset counts every minute
+    // Only check time every 5 seconds to reduce Date.now() calls
+    if (now - this.lastResetTime > 60000) {
       this.requestCounts.clear();
       this.lastResetTime = now;
     }
@@ -166,7 +180,8 @@ class OpenRouterApiService {
     for (const modelType of [selectedModel, ...fallbackModels]) {
       if (this.isRateLimited(modelType)) {
         if (this.config.getDebugMode()) {
-          console.log(`Model ${modelType} is rate limited, trying next model`);
+          const sanitizedModelType = String(modelType).replace(/[\r\n]/g, ' ');
+          console.log(`Model ${sanitizedModelType} is rate limited, trying next model`);
         }
         continue;
       }
@@ -187,7 +202,11 @@ class OpenRouterApiService {
         return response;
       } catch (error) {
         if (this.config.getDebugMode()) {
-          console.log(`Model ${modelType} failed, trying next model:`, error);
+          const sanitizedModelType = String(modelType).replace(/[\r\n]/g, ' ');
+          const sanitizedError = error instanceof Error ? 
+            error.message?.replace(/[\r\n]/g, ' ') || 'Unknown error' : 
+            String(error).replace(/[\r\n]/g, ' ');
+          console.log(`Model ${sanitizedModelType} failed, trying next model: ${sanitizedError}`);
         }
         continue;
       }
@@ -249,6 +268,7 @@ Keep responses brief but valuable, focusing on the most important information.`;
     ];
 
     // Add recent conversation history (last 10 messages to manage token usage)
+    // Use more efficient array processing
     const recentHistory = conversationHistory.slice(-10);
     for (const msg of recentHistory) {
       messages.push({
@@ -362,7 +382,7 @@ const generateMockResponse = async (
   _conversationHistory: Message[]
 ): Promise<string> => {
   // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
+  await new Promise(resolve => setTimeout(resolve, 1500)); // Use consistent delay
   
   const message = userMessage.toLowerCase();
   const currentDate = new Date().toLocaleDateString('en-IN');

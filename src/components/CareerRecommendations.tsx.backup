@@ -1,15 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { ChevronLeft, Target, BookOpen, TrendingUp, Users, Star, Award, IndianRupee } from 'lucide-react';
 import { StudentProfile } from '../types/StudentProfile';
-import { generateCareerRecommendations, generateLearningPlan, generateMockQuestions, generateResumeImprovement } from '../utils/careerAnalysis';
-
-const IN_DEMAND_SKILLS = [
-  'Artificial Intelligence & Machine Learning',
-  'Full-Stack Development', 
-  'UI/UX Design',
-  'Data Science & Analytics',
-  'Cloud Computing'
-];
+import { generateCareerRecommendations, generateLearningPlan, generateMockQuestions, generateResumeImprovement } from '../utils/careerAnalysis';\n\nconst IN_DEMAND_SKILLS = [\n  'Artificial Intelligence & Machine Learning',\n  'Full-Stack Development', \n  'UI/UX Design',\n  'Data Science & Analytics',\n  'Cloud Computing'\n];
 
 interface CareerRecommendationsProps {
   profile: StudentProfile;
@@ -18,23 +10,11 @@ interface CareerRecommendationsProps {
 }
 
 const CareerRecommendations: React.FC<CareerRecommendationsProps> = ({ profile, onBack, onStartChat }) => {
-  const careerPaths = generateCareerRecommendations(profile);
-  const learningPlan = careerPaths.length > 0 ? generateLearningPlan(profile, careerPaths[0]) : [];
-  const mockQuestions = generateMockQuestions(careerPaths);
-  const resumeImprovements = generateResumeImprovement(profile, careerPaths);
-
-  // Early return if no career paths found
-  if (careerPaths.length === 0) {
-    return (
-      <div className="container mx-auto px-4 py-8 text-center">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">No Career Paths Found</h2>
-        <p className="text-gray-600 mb-6">Please go back and provide more information about your interests and strengths.</p>
-        <button onClick={onBack} className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-          Go Back
-        </button>
-      </div>
-    );
-  }
+  // Use useMemo for expensive calculations
+  const careerPaths = useMemo(() => generateCareerRecommendations(profile), [profile]);
+  const learningPlan = useMemo(() => generateLearningPlan(profile, careerPaths[0]), [profile, careerPaths]);
+  const mockQuestions = useMemo(() => generateMockQuestions(careerPaths), [careerPaths]);
+  const resumeImprovements = useMemo(() => generateResumeImprovement(profile, careerPaths), [profile, careerPaths]);
 
   const confidenceColors = {
     High: 'bg-green-100 text-green-800',

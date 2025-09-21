@@ -25,9 +25,14 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     this.setState({ error, errorInfo });
     
-    // Log error to console in development
+    // Log error to console in development with sanitization
     if (import.meta.env.DEV) {
-      console.error('ErrorBoundary caught an error:', error, errorInfo);
+      const sanitizedError = {
+        message: error.message?.replace(/[\r\n]/g, ' ') || 'Unknown error',
+        name: error.name?.replace(/[\r\n]/g, ' ') || 'Error',
+        stack: error.stack?.replace(/[\r\n]/g, ' ') || 'No stack trace'
+      };
+      console.error('ErrorBoundary caught an error:', sanitizedError);
     }
     
     // In production, you might want to send this to an error reporting service
@@ -40,9 +45,9 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 
   render() {
     if (this.state.hasError) {
-      if (this.props.fallback) {
+      if (this.props.fallback && this.state.error) {
         const FallbackComponent = this.props.fallback;
-        return <FallbackComponent error={this.state.error!} resetError={this.resetError} />;
+        return <FallbackComponent error={this.state.error} resetError={this.resetError} />;
       }
 
       return (

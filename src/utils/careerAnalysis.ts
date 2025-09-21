@@ -110,7 +110,7 @@ export const generateCareerRecommendations = (profile: StudentProfile): CareerPa
   return recommendations.slice(0, 5); // Return top 5 recommendations
 };
 
-export const generateLearningPlan = (profile: StudentProfile, primaryCareer: CareerPath): LearningPlan[] => {
+export const generateLearningPlan = (_profile: StudentProfile, primaryCareer: CareerPath): LearningPlan[] => {
   const plan: LearningPlan[] = [];
   
   if (primaryCareer.title.includes('Data Science')) {
@@ -274,6 +274,9 @@ export const generateLearningPlan = (profile: StudentProfile, primaryCareer: Car
 
 export const generateMockQuestions = (careerPaths: CareerPath[]): MockQuestion[] => {
   const questions: MockQuestion[] = [];
+  if (careerPaths.length === 0) {
+    return questions;
+  }
   const primaryCareer = careerPaths[0];
   
   // Technical questions based on primary career
@@ -355,7 +358,7 @@ export const generateMockQuestions = (careerPaths: CareerPath[]): MockQuestion[]
   return questions;
 };
 
-export const generateResumeImprovement = (profile: StudentProfile, careerPaths: CareerPath[]) => {
+export const generateResumeImprovement = (_profile: StudentProfile, careerPaths: CareerPath[]) => {
   const improvements = [
     {
       category: 'Skills Section',
@@ -375,7 +378,7 @@ export const generateResumeImprovement = (profile: StudentProfile, careerPaths: 
   ];
   
   // Add career-specific improvements
-  if (careerPaths[0].title.includes('Data Science')) {
+  if (careerPaths.length > 0 && careerPaths[0].title.includes('Data Science')) {
     improvements.push({
       category: 'Data Science Projects',
       before: 'Analyzed data using Excel',

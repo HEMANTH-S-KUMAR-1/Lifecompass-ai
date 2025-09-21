@@ -2,6 +2,21 @@ import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, User, BookOpen, Heart, TrendingUp } from 'lucide-react';
 import { StudentProfile } from '../types/StudentProfile';
 
+// Move static data outside component for performance
+const academicStrengthOptions = [
+  'Mathematics', 'Physics', 'Chemistry', 'Biology', 'English', 'History',
+  'Geography', 'Economics', 'Computer Science', 'Arts & Drawing', 'Music',
+  'Physical Education', 'Languages', 'Social Studies'
+];
+
+const interestOptions = [
+  'Technology & Programming', 'Design & Creativity', 'Business & Finance',
+  'Healthcare & Medicine', 'Education & Teaching', 'Arts & Entertainment',
+  'Sports & Fitness', 'Social Work', 'Research & Science', 'Travel & Tourism',
+  'Food & Cooking', 'Environment & Nature', 'Media & Communication',
+  'Law & Justice', 'Engineering & Innovation'
+];
+
 interface StudentProfileFormProps {
   onSubmit: (profile: StudentProfile) => void;
   onBack: () => void;
@@ -62,20 +77,6 @@ const StudentProfileForm: React.FC<StudentProfileFormProps> = ({ onSubmit, onBac
     onSubmit(formData);
   };
 
-  const academicStrengthOptions = [
-    'Mathematics', 'Physics', 'Chemistry', 'Biology', 'English', 'History',
-    'Geography', 'Economics', 'Computer Science', 'Arts & Drawing', 'Music',
-    'Physical Education', 'Languages', 'Social Studies'
-  ];
-
-  const interestOptions = [
-    'Technology & Programming', 'Design & Creativity', 'Business & Finance',
-    'Healthcare & Medicine', 'Education & Teaching', 'Arts & Entertainment',
-    'Sports & Fitness', 'Social Work', 'Research & Science', 'Travel & Tourism',
-    'Food & Cooking', 'Environment & Nature', 'Media & Communication',
-    'Law & Justice', 'Engineering & Innovation'
-  ];
-
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
       {/* Header */}
@@ -116,7 +117,10 @@ const StudentProfileForm: React.FC<StudentProfileFormProps> = ({ onSubmit, onBac
                 <input
                   type="number"
                   value={formData.age}
-                  onChange={(e) => handleInputChange('age', parseInt(e.target.value))}
+                  onChange={(e) => {
+                    const value = parseInt(e.target.value);
+                    handleInputChange('age', isNaN(value) ? 0 : value);
+                  }}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   min="14"
                   max="30"
