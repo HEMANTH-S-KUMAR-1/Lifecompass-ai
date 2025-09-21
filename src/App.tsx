@@ -83,11 +83,7 @@ function App() {
 
           {/* Stats */}
           <div className="bg-white rounded-2xl p-8 mb-16 shadow-sm border border-gray-100">
-            <div className="grid md:grid-cols-3 gap-8 text-center">
-              <div>
-                <div className="text-3xl font-bold text-blue-600 mb-2">50,000+</div>
-                <div className="text-gray-600">Students Guided</div>
-              </div>
+            <div className="grid md:grid-cols-2 gap-8 text-center">
               <div>
                 <div className="text-3xl font-bold text-green-600 mb-2">85%</div>
                 <div className="text-gray-600">Success Rate</div>
